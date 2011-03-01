@@ -1,0 +1,15 @@
+#summary 布署高性能的单个本地代理, 托管多个GAE应用程序
+#labels 布署高性能的单个本地代理托管多个GAE应用程序
+
+= 简介 =
+
+本文前提是你已知道如何[http://code.google.com/p/g2proxy/wiki/Knowledge2 用G2Proxy布署多个本地代理].
+
+由于受到GAE配额(Quota)的限制, 当一个本地代理A连续使用一段时间后, A所对应的
+Fetch server应用程序的配额(Quota)可能受到限制, 换句话说是你的下载量可能超过了GAE限制, 而出现Service Unavailable 的错误,
+造成本地代理A不能继续使用, 因此, 你必须手工切换到下一个已设置好的本地代理B.
+
+那有没有办法, 让应用程序配额即将耗完前就自动切换到下一个已设置好的本地代理B呢? 答案是肯定的, 下面我将介绍如何仅布署一个高性能的单个本地代理, 去托管你所拥有多个GAE应用程序, 并且那些应用程序应该已经预先布署好了[http://code.google.com/p/gappproxy/wiki/FAQ Fetch Server].
+
+
+= Let's go! =
