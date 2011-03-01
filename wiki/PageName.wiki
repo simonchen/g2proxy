@@ -1,0 +1,18 @@
+#summary One-sentence summary of this page.
+
+= 简介 =
+
+对于GAE(Google Application Engine)的免费用户, 由于GAE对于配额(Quota)的限制, 在某段时间如果你的引用(Incoming)和引出(Outgoing)流量太大, 你所设定好的单个本地[http://code.google.com/p/gappproxy GAppProxy]代理可能会失效1到2小时,然后,才能继续再使用!
+因此, 我们现在需要设置多个本地GAppProxy代理, 当某一个代理不能使用时, 我们可以手工或自动地切换到用下一个代理.
+
+
+= 细节 =
+
+如果你已经了解(GAE)Google Application Engine的基本特点, 你应该已经知道用一个gmail帐号+绑定一个手机号注册后, 最多可以创建10个应用程序(application)实例, GAppProxy是基于GAE的, 在开始本地代理服务程序proxy.py之前, 我们必须先将一个具有代理特性的fetch.py将先上传(upload)到某一个应用程序, 然后, 才能开始启动本地代理, 基本的流程如下:
+
+[Web Browser] <--------------> [Local proxy - proxy.py] <------------------> [GAE app. - fetch.py]
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
