@@ -41,7 +41,7 @@ listen_port = 8081
 _MAX_QUOTA_OF_REMOTE_SERVER = 5*1024*1024 
 
 # Retry next remote server see if the remote server has been idling for how many seconds, then trigger up again.
-_RETRY_TEIMOUT_OF_REMOTE_SERVER = 120 # in seconds
+_RETRY_TIMEOUT_OF_REMOTE_SERVER = 120 # in seconds
 
 # Indicates that you want to use more proxies or not.
 _USE_MORE_PROXIES = False
