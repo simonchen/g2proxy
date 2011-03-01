@@ -57,7 +57,8 @@ local_proxy_ip = "127.0.0.1"
 google_apps = {
 # substitutes 'your-app-server' that you created one or more..
     9000: 'http://your-app-server.appspot.com/fetch.py',
-# replicates above line to add more app server created by youself..
+# replicates above line(including white spaces), and replace {your-app-server} part as yourself app ID.
+# you will own multiple proxies now! Owww!
 #   9001: 'http://your-app-server2.appspot.com/fetch.py',
 #   ...
 }
