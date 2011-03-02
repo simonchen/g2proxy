@@ -66,7 +66,8 @@ google_apps = {
 class LocalProxyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     PostDataLimit = 0x100000
     _remote_proxies = [[google_apps[port], None, 0, 0] for port in google_apps] # [port, last_usage_time, received_bytes, quota
-
+    _remote_server = None
+    
     def do_CONNECT(self):
         if not ssl_enabled:
             self.send_error(501, "Local proxy error, HTTPS needs Python2.6 or later.")
@@ -177,12 +178,22 @@ class LocalProxyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 break
     
     def lookup_remote_proxy(self):
+        temp_proxy = None
         for item in LocalProxyHandler._remote_proxies:
             proxy, last_time, recv_bytes, quota = item
-            if (last_time is None) or (time.time() - last_time) > _RETRY_TEIMOUT_OF_REMOTE_SERVER: # Attempt to use the proxy after 2 minutes
-                item[1] = time.time()
+            if (last_time is None) or (time.time() - last_time) > _RETRY_TIMEOUT_OF_REMOTE_SERVER: # Attempt to use the proxy after 2 minutes
+                #item[1] = time.time()
+                if temp_proxy is None:
+                    temp_proxy = item
+                else:
+                    if quota < temp_proxy[3]:
+                        temp_proxy = item
                 return proxy
-            
+
+        if temp_proxy:
+            temp_proxy[1] = time.time()
+            return temp_proxy[0]
+
         return None
     
     def forever_lookup_remote_proxy(self):
@@ -257,7 +268,10 @@ class LocalProxyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         # accept-encoding: identity, *;q=0
         # connection: close
         server_port = self.server.server_port
-        remote_server = google_apps[server_port]
+        if not LocalProxyHandler._remote_server:
+            remote_server = google_apps[server_port]
+        else:
+            remote_server = LocalProxyHandler._remote_server
         if not _USE_MORE_PROXIES and _MAX_QUOTA_OF_REMOTE_SERVER > 0:
             total_count, quota = self.stat_remote_proxy(remote_server, 0)
             if quota > _MAX_QUOTA_OF_REMOTE_SERVER:
@@ -395,10 +409,14 @@ class LocalProxyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         allowed_failed = 10
         
         server_port = self.server.server_port
-        remote_server = google_apps[server_port]
         
         while allowed_failed > 0:
             recv_count = 0
+            
+            if not LocalProxyHandler._remote_server:
+                remote_server = google_apps[server_port]
+            else:
+                remote_server = LocalProxyHandler._remote_server
             if not _USE_MORE_PROXIES and _MAX_QUOTA_OF_REMOTE_SERVER > 0:
                 total_count, quota = self.stat_remote_proxy(remote_server, 0)
                 if quota > _MAX_QUOTA_OF_REMOTE_SERVER:
