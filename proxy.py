@@ -186,9 +186,8 @@ class LocalProxyHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 if temp_proxy is None:
                     temp_proxy = item
                 else:
-                    if quota < temp_proxy[3]:
+                    if recv_bytes < temp_proxy[2]:
                         temp_proxy = item
-                return proxy
 
         if temp_proxy:
             temp_proxy[1] = time.time()
